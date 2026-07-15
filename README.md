@@ -3,3 +3,5 @@
 Autonomous on-chain Pizza Slice NFTs powered by Sato.
 
 Coming soon.
+
+https://satopizza.xyz/
