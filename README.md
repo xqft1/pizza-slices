@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PizzaSlices
 
 PizzaSlices is the official NFT collection for the Pizza Protocol.
@@ -46,3 +47,5 @@ PizzaSlices: `0x41ab5268d2527f120a3dbe0902d68d024226d7ce`
 ## License
 
 MIT
+=======
+
