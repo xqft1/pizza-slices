@@ -52,10 +52,10 @@ app.get("/image/:id", async (req, res) => {
     const slice = LEVELS[level] ?? LEVELS[0];
 
     const svgPath = path.join(
-      process.cwd(),
-      "assets",
-      `${slice.name}.svg`
-    );
+  process.cwd(),
+  "images",
+  `${slice.name}.svg`
+);
 
     let svg = fs.readFileSync(svgPath, "utf8");
 
