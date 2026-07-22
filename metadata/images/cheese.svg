@@ -1,1 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1280"
+     height="1280"
+     viewBox="0 0 1280 1280">
 
+  <image
+    href="{{IMAGE}}"
+    x="0"
+    y="0"
+    width="1280"
+    height="1280"
+  />
+
+  <text
+    x="835"
+    y="210"
+    text-anchor="middle"
+    font-family="monospace"
+    font-size="100"
+    font-weight="bold"
+    fill="#f8fafb">#{{TOKEN}}</text>
+
+</svg>
