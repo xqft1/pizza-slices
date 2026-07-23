@@ -39,11 +39,12 @@ app.get("/metadata/:id", async (req, res) => {
       ]
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Dynamic SVG image endpoint
+// Dynamic self-contained SVG image endpoint
 app.get("/image/:id", async (req, res) => {
   try {
     const tokenId = req.params.id;
@@ -52,24 +53,48 @@ app.get("/image/:id", async (req, res) => {
     const slice = LEVELS[level] ?? LEVELS[0];
 
     const svgPath = path.join(
-  process.cwd(),
-  "images",
-  `${slice.name}.svg`
-);
+      process.cwd(),
+      "images",
+      `${slice.name}.svg`
+    );
 
     let svg = fs.readFileSync(svgPath, "utf8");
 
-    svg = svg
-      .replace("{{IMAGE}}", `https://satopizza.xyz/${slice.image}`)
-      .replace("{{TOKEN}}", String(tokenId).padStart(5, "0"));
+    const pngUrl = `https://satopizza.xyz/${slice.image}`;
+    const pngResponse = await fetch(pngUrl);
 
-    res.setHeader("Content-Type", "image/svg+xml");
+    if (!pngResponse.ok) {
+      throw new Error(
+        `Failed to load ${pngUrl}: ${pngResponse.status}`
+      );
+    }
+
+    const pngBuffer = Buffer.from(
+      await pngResponse.arrayBuffer()
+    );
+
+    const embeddedImage =
+      `data:image/png;base64,${pngBuffer.toString("base64")}`;
+
+    svg = svg
+      .replace("{{IMAGE}}", embeddedImage)
+      .replace(
+        "{{TOKEN}}",
+        String(tokenId).padStart(5, "0")
+      );
+
+    res.status(200);
+    res.set("Content-Type", "image/svg+xml; charset=utf-8");
+    res.set("Cache-Control", "no-store");
     res.send(svg);
   } catch (err) {
+    console.error(err);
     res.status(500).send(err.message);
   }
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`Metadata server running on port ${process.env.PORT}`);
+  console.log(
+    `Metadata server running on port ${process.env.PORT}`
+  );
 });
