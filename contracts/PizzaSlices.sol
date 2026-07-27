@@ -48,48 +48,59 @@ contract PizzaSlices is ERC721A, Ownable {
     uint256 public constant PUBLIC_SUPPLY = 9800;
     uint256 public constant MINT_PRICE = 0.005 ether;
 
-    // SATO token
+    address payable public constant DEV_WALLET =
+        payable(0x9a30Cf4527D2CC80884405e16337149ab59e3d6E);
+
     IERC20 public constant SATO =
         IERC20(0x829f4B62EEBE12Af653b4dD4fFc480966F7d7f09);
 
-    ILpRewardDistributor public constant lpRewards =
-        ILpRewardDistributor(0x281672e42351961D80A12dEEfDC98EA0be51466A);
+    ILpRewardDistributor public lpRewards;
 
     uint256 public publicMinted;
     uint256 public reservedMinted;
 
-    string public baseMetadataURI = "https://satopizza.xyz/metadata/";
+    string public baseMetadataURI = "https://metadata.satopizza.xyz/metadata/";
 
     mapping(uint256 => uint8) public sliceLevel;
 
-uint256[8] public upgradeCost = [
-    uint256(10),
-    50,
-    150,
-    500,
-    1500,
-    3000,
-    6000,
-    10000
-];
+    uint256[8] public upgradeCost = [
+        10 ether,
+        50 ether,
+        150 ether,
+        500 ether,
+        1500 ether,
+        3000 ether,
+        6000 ether,
+        10000 ether
+    ];
 
-event Upgrade(
-    uint256 indexed tokenId,
-    address indexed owner,
-    uint8 newLevel,
-    uint256 cost
-);
+    event Upgrade(
+        uint256 indexed tokenId,
+        address indexed owner,
+        uint8 newLevel,
+        uint256 cost
+    );
 
-event LevelUp(
-    uint256 indexed tokenId,
-    uint8 fromLevel,
-    uint8 toLevel
-);
+    event LevelUp(
+        uint256 indexed tokenId,
+        uint8 fromLevel,
+        uint8 toLevel
+    );
 
-    constructor(address initialOwner)
+    event RewardDistributorUpdated(
+        address indexed oldDistributor,
+        address indexed newDistributor
+    );
+
+    constructor(
+        address initialOwner,
+        address rewardDistributor
+    )
         ERC721A("Pizza Slices", "SLICE")
         Ownable(initialOwner)
-    {}
+    {
+        lpRewards = ILpRewardDistributor(rewardDistributor);
+    }
 
     function _startTokenId() internal pure override returns (uint256) {
         return 1;
@@ -103,6 +114,9 @@ event LevelUp(
 
         publicMinted += quantity;
         _mint(msg.sender, quantity);
+
+        (bool success,) = DEV_WALLET.call{value: msg.value}("");
+        require(success, "ETH transfer failed");
     }
 
     function airdrop(address recipient, uint256 quantity) external onlyOwner {
@@ -126,29 +140,38 @@ event LevelUp(
     }
 
     function upgrade(uint256 tokenId) external {
-    require(ownerOf(tokenId) == msg.sender, "Not owner");
+        require(ownerOf(tokenId) == msg.sender, "Not owner");
 
-    uint8 level = sliceLevel[tokenId];
-    require(level < 8, "Already GOLDEN");
+        uint8 level = sliceLevel[tokenId];
+        require(level < 8, "Already GOLDEN");
 
-    uint256 cost = upgradeCost[level];
+        uint256 cost = upgradeCost[level];
 
-    require(
-        SATO.transferFrom(
-            msg.sender,
-            address(lpRewards),
-            cost
-        ),
-        "SATO transfer failed"
-    );
+        require(
+            SATO.transferFrom(
+                msg.sender,
+                address(lpRewards),
+                cost
+            ),
+            "SATO transfer failed"
+        );
 
-    lpRewards.notifyRewardAmount(cost);
+        lpRewards.notifyRewardAmount(cost);
 
-    sliceLevel[tokenId] = level + 1;
+        sliceLevel[tokenId] = level + 1;
 
-    emit Upgrade(tokenId, msg.sender, level + 1, cost);
-    emit LevelUp(tokenId, level, level + 1);
-}
+        emit Upgrade(tokenId, msg.sender, level + 1, cost);
+        emit LevelUp(tokenId, level, level + 1);
+    }
+
+    function setRewardDistributor(address newDistributor) external onlyOwner {
+        require(newDistributor != address(0), "Invalid address");
+
+        address oldDistributor = address(lpRewards);
+        lpRewards = ILpRewardDistributor(newDistributor);
+
+        emit RewardDistributorUpdated(oldDistributor, newDistributor);
+    }
 
     function setBaseMetadataURI(string calldata newBaseMetadataURI)
         external
