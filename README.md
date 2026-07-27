@@ -41,7 +41,7 @@ GOLDEN.EXE
 
 ## Contracts
 
-PizzaSlices: `0x41ab5268d2527f120a3dbe0902d68d024226d7ce`
+PizzaSlices: `0xa10fc874aa417f898CebcBFf3Fa548A6e14a083E
 
 ## License
 
