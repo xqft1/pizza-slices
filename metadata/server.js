@@ -6,12 +6,21 @@ import { ABI } from "./abi.js";
 import { LEVELS } from "./levels.js";
 import fs from "fs";
 import path from "path";
+import { CRUSTS } from "./crusts.js";
 
 const app = express();
 
 const contract = new Contract(
   process.env.CONTRACT_ADDRESS,
   ABI,
+  provider
+);
+
+const crustOven = new Contract(
+  "0x1ccdbe4ce02fa837923fd6956abfe0278826e1e6",
+  [
+    "function crustLevel(uint256) view returns (uint8)"
+  ],
   provider
 );
 
