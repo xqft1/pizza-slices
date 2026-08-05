@@ -68,6 +68,9 @@ app.get("/image/:id", async (req, res) => {
     const level = Number(await contract.sliceLevel(tokenId));
     const slice = LEVELS[level] ?? LEVELS[0];
 
+    const crustLevel = Number(await crustOven.crustLevel(tokenId));
+    const crust = CRUSTS[crustLevel] ?? CRUSTS[0];
+
     const svgPath = path.join(
       process.cwd(),
       "images",
