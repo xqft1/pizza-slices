@@ -40,15 +40,19 @@ app.get("/metadata/:id", async (req, res) => {
       description: "Dynamic PizzaSlices NFT",
       image: `https://metadata.satopizza.xyz/image/${tokenId}`,
       attributes: [
-        {
-          trait_type: "Slice",
-          value: slice.name
-        },
-        {
-          trait_type: "Level",
-          value: level
-        }
-      ]
+  {
+    trait_type: "Slice",
+    value: slice.name
+  },
+  {
+    trait_type: "Crust",
+    value: crust.name
+  },
+  {
+    trait_type: "Level",
+    value: level
+  }
+]
     });
   } catch (err) {
     console.error(err);
