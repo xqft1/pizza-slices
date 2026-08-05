@@ -69,7 +69,7 @@
     fill="#39FF14"
     xml:space="preserve">
 
-    <tspan x="40" dy="127">C:/CRUST: Hot dog stuffed</tspan>
+    <tspan x="40" dy="127">C:/CRUST: {{CRUST}}</tspan>
 
 </text>
 
