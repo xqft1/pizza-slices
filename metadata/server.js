@@ -98,7 +98,8 @@ app.get("/image/:id", async (req, res) => {
         "{{TOKEN}}",
         String(tokenId).padStart(5, "0")
       )
-    .replace('{{SLICE}}', slice.name);
+    .replace('{{SLICE}}', slice.name)
+    .replace("{{CRUST}}", crust.name);
 
     res.status(200);
     res.set("Content-Type", "image/svg+xml; charset=utf-8");
