@@ -1,29 +1,11 @@
 export const CRUSTS = [
-  {
-    name: "PLAIN"
-  },
-  {
-    name: "THIN"
-  },
-  {
-    name: "DEEP PAN"
-  },
-  {
-    name: "STUFFED"
-  },
-  {
-    name: "CHEESE STUFFED"
-  },
-  {
-    name: "HOT DOG STUFFED"
-  },
-  {
-    name: "GARLIC STUFFED"
-  },
-  {
-    name: "GOLDEN"
-  },
-  {
-    name: "IMMORTAL"
-  }
+  { name: "REGULAR" },          // level 0 (default)
+  { name: "THIN" },             // level 1
+  { name: "DEEP PAN" },         // level 2
+  { name: "STUFFED" },          // level 3
+  { name: "CHEESE STUFFED" },   // level 4
+  { name: "HOT DOG STUFFED" },  // level 5
+  { name: "GARLIC STUFFED" },   // level 6
+  { name: "GOLDEN" },           // level 7
+  { name: "IMMORTAL" }          // level 8
 ];
