@@ -81,7 +81,7 @@ app.get("/image/:id", async (req, res) => {
       .replace(
         "{{TOKEN}}",
         String(tokenId).padStart(5, "0")
-      );
+      )
     .replace('{{SLICE}}', slice.name);
 
     res.status(200);
